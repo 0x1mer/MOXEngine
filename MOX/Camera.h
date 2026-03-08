@@ -22,7 +22,7 @@ class Camera
 public:
     Transform transform{};
 
-    float movementSpeed = 2.5f;
+    float movementSpeed = 5.0f;
     float mouseSensitivity = 0.1f;
     float zoomDegrees = 45.0f;
 

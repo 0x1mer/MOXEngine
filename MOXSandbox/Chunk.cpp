@@ -55,38 +55,83 @@ void Chunk::SetBlock(const BlockPos& pos, const Block& block)
     dirty = true;
 }
 
+bool Chunk::IsAir(const BlockPos& pos)
+{
+    if (pos.x < 0 || pos.y < 0 || pos.z < 0 ||
+        pos.x >= CHUNK_SIZE || pos.y >= CHUNK_SIZE || pos.z >= CHUNK_SIZE)
+        return true;
+
+    return GetBlock(pos).metadata.id == 0;
+}
+
+void AddFace(const FaceMesh& face, glm::vec3 pos, std::vector<Vertex>& vertices_, std::vector<uint32_t>& indices_)
+{
+    uint32_t vertexOffset = vertices_.size();
+
+    for (const Vertex& v : face.vertices)
+    {
+        Vertex nv = v;
+        nv.pos += pos;
+        vertices_.push_back(nv);
+    }
+
+    for (uint32_t i : face.indices)
+    {
+        indices_.push_back(i + vertexOffset);
+    }
+}
+
+bool Chunk::IsFaceVisible(const BlockPos& pos) const
+{
+    if (pos.x < 0 || pos.y < 0 || pos.z < 0 ||
+        pos.x >= CHUNK_SIZE || pos.y >= CHUNK_SIZE || pos.z >= CHUNK_SIZE)
+        return true;
+
+    const Block& neighbour = GetBlock(pos);
+
+    if (neighbour.metadata.id == 0)
+        return true;
+
+    const auto& neighbourType = BlockRegistry::Get(neighbour.metadata.id);
+
+    return !HasFlag(neighbourType.flags, BlockFlags::FullCube);
+}
 
 void Chunk::BuildMesh()
 {
     std::vector<Vertex> vertices_;
     std::vector<uint32_t> indices_;
 
-    vertices_.reserve(32768 * 24);
-    indices_.reserve(32768 * 36);
+    vertices_.reserve(8192);
+    indices_.reserve(12288);
 
     for (int z = 0; z < CHUNK_SIZE; ++z) {
         for (int y = 0; y < CHUNK_SIZE; ++y) {
             for (int x = 0; x < CHUNK_SIZE; ++x) {
 
                 const Block& block = GetBlock({ x, y, z });
-                if (block.metadata.id == 0 || block.metadata.name == "air")
+                if (block.metadata.id == 0)
                     continue;
 
-                uint32_t vertexOffset = static_cast<uint32_t>(vertices_.size());
+				const auto& blockType = BlockRegistry::Get(block.metadata.id);
 
-				const auto& blockType = BlockRegistry::Get(block.metadata.name);
+                if (IsFaceVisible({ x, y, z - 1 }))
+                    AddFace(blockType.mesh.north, { x,y,z }, vertices_, indices_);
 
-                for (const Vertex& v : blockType.mesh.vertices)
-                {
-                    Vertex newVertex = v;
-                    newVertex.pos += glm::vec3(x, y, z);
-                    vertices_.push_back(newVertex);
-                }
+                if (IsFaceVisible({ x, y, z + 1 }))
+                    AddFace(blockType.mesh.south, { x,y,z }, vertices_, indices_);
 
-                for (uint32_t idx : blockType.mesh.indices)
-                {
-                    indices_.push_back(idx + vertexOffset);
-                }
+                if (IsFaceVisible({ x - 1, y, z }))
+                    AddFace(blockType.mesh.west, { x,y,z }, vertices_, indices_);
+
+                if (IsFaceVisible({ x + 1, y, z }))
+                    AddFace(blockType.mesh.east, { x,y,z }, vertices_, indices_);
+
+                if (IsFaceVisible({ x, y + 1, z }))
+                    AddFace(blockType.mesh.up, { x,y,z }, vertices_, indices_);
+
+                if (IsFaceVisible({ x, y - 1, z }))
+                    AddFace(blockType.mesh.down, { x,y,z }, vertices_, indices_);
             }
         }
     }

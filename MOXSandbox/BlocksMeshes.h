@@ -20,9 +20,20 @@
 
 #include <nlohmann/json.hpp>
 
-struct BlockMesh{
-	std::vector<Vertex> vertices;
-	std::vector<uint32_t> indices;
+struct FaceMesh
+{
+    std::vector<Vertex> vertices;
+    std::vector<uint32_t> indices;
+};
+
+struct BlockMesh
+{
+    FaceMesh north;
+    FaceMesh south;
+    FaceMesh west;
+    FaceMesh east;
+    FaceMesh up;
+    FaceMesh down;
 };
 
 struct TextureVariant
@@ -172,11 +183,12 @@ namespace bb
         );
     }
 
-    inline void AddQuad(BlockMesh& mesh,
+    inline void AddQuad(
+        FaceMesh& mesh,
         const glm::vec3& p0, const glm::vec3& p1,
         const glm::vec3& p2, const glm::vec3& p3,
         const glm::vec3& normal,
-        const FaceUV& uvTile,                 
+        const FaceUV& uvTile,
         const TextureAtlas::UVRect& tileRect,
         float uvDivisor,
         const glm::vec3& color = glm::vec3(1.0f))
@@ -314,7 +326,8 @@ namespace bb
             if (hasRotation)
                 R = BuildRotationMatrix(el["rotation"], unitScale);
 
-            auto addFace = [&](const char* faceName,
+            auto addFace = [&](FaceMesh& target,
+                const char* faceName,
                 glm::vec3 a, glm::vec3 b, glm::vec3 c, glm::vec3 d,
                 glm::vec3 nLocal)
                 {
@@ -365,36 +378,31 @@ namespace bb
                         nLocal = TransformNormal(R, nLocal);
                     }
 
-                    AddQuad(out.mesh, a, b, c, d, nLocal, uv, tileRect, uvDivisor);
+                    AddQuad(target, a, b, c, d, nLocal, uv, tileRect, uvDivisor);
                 };
 
             // north (-Z)
-            addFace("north",
+            addFace(out.mesh.north, "north",
                 p100, p000, p010, p110,
                 glm::vec3(0, 0, -1));
 
-            // south (+Z)
-            addFace("south",
+            addFace(out.mesh.south, "south",
                 p001, p101, p111, p011,
                 glm::vec3(0, 0, 1));
 
-            // west (-X)
-            addFace("west",
+            addFace(out.mesh.west, "west",
                 p000, p001, p011, p010,
                 glm::vec3(-1, 0, 0));
 
-            // east (+X)
-            addFace("east",
+            addFace(out.mesh.east, "east",
                 p101, p100, p110, p111,
                 glm::vec3(1, 0, 0));
 
-            // down (-Y)
-            addFace("down",
+            addFace(out.mesh.down, "down",
                 p000, p100, p101, p001,
                 glm::vec3(0, -1, 0));
 
-            // up (+Y)
-            addFace("up",
+            addFace(out.mesh.up, "up",
                 p010, p011, p111, p110,
                 glm::vec3(0, 1, 0));
         }

@@ -53,6 +53,9 @@ private:
 		return pos.x + pos.y * CHUNK_SIZE + pos.z * CHUNK_SIZE * CHUNK_SIZE;
 	}
 
+	bool IsFaceVisible(const BlockPos& pos) const;
+	bool IsAir(const BlockPos& pos);
+
 private:
 	Block blocks[CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE];;
 	ChunkPos position;
