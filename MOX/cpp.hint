@@ -1,0 +1,2 @@
+#define MOX_API __declspec(dllexport)
+#define MOX_API __declspec(dllimport)

@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source">
+      <UniqueIdentifier>{40f05986-5d39-4fb2-8fef-7785dd53f344}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dependencies">
+      <UniqueIdentifier>{ca2a2513-c518-467d-8ed4-053204e2c84a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BlockModels">
+      <UniqueIdentifier>{389d6e51-7517-4549-825c-4e45ce94b50d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Textures">
+      <UniqueIdentifier>{baeba72d-d7d1-4ede-942b-34de6f54a82b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Blocks">
+      <UniqueIdentifier>{566b0315-e181-43d3-bd1c-463172ac5b7a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Blocks\BlocksDefinitions">
+      <UniqueIdentifier>{8965be83-9207-46ee-9d27-ad4df5eaeb08}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Dependencies\src\glad.c">
+      <Filter>Dependencies</Filter>
+    </ClCompile>
+    <ClCompile Include="Chunk.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Chunk.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Dirt.h">
+      <Filter>Source\Blocks\BlocksDefinitions</Filter>
+    </ClInclude>
+    <ClInclude Include="Block.h">
+      <Filter>Source\Blocks</Filter>
+    </ClInclude>
+    <ClInclude Include="BlockAutoRegister.h">
+      <Filter>Source\Blocks</Filter>
+    </ClInclude>
+    <ClInclude Include="BlockRegistry.h">
+      <Filter>Source\Blocks</Filter>
+    </ClInclude>
+    <ClInclude Include="BlocksMeshes.h">
+      <Filter>Source\Blocks</Filter>
+    </ClInclude>
+    <ClInclude Include="BlockTypes.h">
+      <Filter>Source\Blocks</Filter>
+    </ClInclude>
+    <ClInclude Include="BlocksIncluder.h">
+      <Filter>Source\Blocks</Filter>
+    </ClInclude>
+    <ClInclude Include="GrassBlock.h">
+      <Filter>Source\Blocks\BlocksDefinitions</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

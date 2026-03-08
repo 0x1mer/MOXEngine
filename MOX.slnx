@@ -1,0 +1,10 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="MOX/MOX.vcxproj" Id="3033fb9f-6901-45e4-9266-45361fea12f1" />
+  <Project Path="MOXSandbox/MOXSandbox.vcxproj" Id="3ea0e73d-1b8c-4ad8-bb50-ed57f686dc1e">
+    <BuildDependency Project="MOX/MOX.vcxproj" />
+  </Project>
+</Solution>

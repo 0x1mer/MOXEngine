@@ -1,0 +1,123 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source">
+      <UniqueIdentifier>{eb9647e0-b5b7-4324-96ae-0e9402b0c4c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{525d6d88-78fc-42c2-bfcc-e7b5130d6dd4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dependencies">
+      <UniqueIdentifier>{d581a84e-a4e9-460c-a8a9-28b98109672c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Dependencies">
+      <UniqueIdentifier>{fbc15626-ecdc-4953-bc86-1ff21fe4c2b2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
+    <None Include="..\Shaders\4.3.shader.fs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\Shaders\4.3.shader.vs">
+      <Filter>Shaders</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="framework.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="MOX_API.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="VAO.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="VBO.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderManager.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Vertex.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Primitives.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Transform.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Model.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Frustum.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureAtlas.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="MOX_API.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="VAO.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="VBO.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Dependencies\src\glad.c">
+      <Filter>Dependencies</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderManager.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Primitives.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureAtlas.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
