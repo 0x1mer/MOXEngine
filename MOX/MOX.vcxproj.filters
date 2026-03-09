@@ -10,9 +10,6 @@
     <Filter Include="Dependencies">
       <UniqueIdentifier>{d581a84e-a4e9-460c-a8a9-28b98109672c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\Dependencies">
-      <UniqueIdentifier>{fbc15626-ecdc-4953-bc86-1ff21fe4c2b2}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
@@ -81,6 +78,9 @@
     <ClInclude Include="EngineTime.h">
       <Filter>Source</Filter>
     </ClInclude>
+    <ClInclude Include="Paths.h">
+      <Filter>Source</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -120,6 +120,9 @@
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="TextureAtlas.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Paths.cpp">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>

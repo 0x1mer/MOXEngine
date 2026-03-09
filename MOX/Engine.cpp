@@ -12,6 +12,7 @@ int Engine::Init()
 	}
 
 	m_time.Init(m_renderer.GetTime());
+    InitPaths();
 
 	m_isInit = true;
 }
