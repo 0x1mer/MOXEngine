@@ -24,8 +24,8 @@ private:
 	std::unordered_set<ChunkPos> m_loadSet;
 	std::unordered_set<ChunkPos> m_unloadSet;
 
-	int m_maxChunkLoadsPerTick = 1;
-	int m_maxChunkUnloadsPerTick = 2;
+	int m_maxChunkLoadsPerTick = 4;
+	int m_maxChunkUnloadsPerTick = 8;
 
 public:
 	explicit ChunkController(size_t chunkLoadRadius_, Scene* scene, Shader* chunkShader) :

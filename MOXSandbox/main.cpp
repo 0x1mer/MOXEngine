@@ -43,21 +43,8 @@ int main()
 
     ChunkPos cachedPlayerChunkPos(UINT64_MAX, UINT64_MAX, UINT64_MAX);
 
-    while (!engine.ShouldClose())
-    {
-		// frame time calculation
-        double currentTime = engine.GetTime();
-        double deltaTime = currentTime - lastTime;
-        lastTime = currentTime;
-
-		// lag compensation: if the game was paused or something, we don't want to update 1000 times in a row
-        deltaTime = std::min(deltaTime, 0.25);
-
-        accumulator += deltaTime;
-
-		// fixed tickrate update
-        while (accumulator >= TICK_TIME)
-        {
+    while (!engine.ShouldClose()) {
+        while (engine.ShouldTick(TICK_TIME)) {
             ChunkPos playerChunk = WorldToChunk(engine.GetCamera().Position());
 
             if (cachedPlayerChunkPos != playerChunk)
@@ -67,11 +54,7 @@ int main()
             }
 
             chunkController.ProcessQueues();
-
-            accumulator -= TICK_TIME;
         }
-
-		// frame update
         engine.Frame(scene);
     }
 

@@ -3,24 +3,15 @@
 #include "MOX_API.h"
 
 #include "Renderer.h"
+#include "EngineTime.h"
 
 class MOX_API Engine
 {
 private:
 	Renderer m_renderer;
+	EngineTime m_time;
 
 	bool m_isInit = false;
-
-	float deltaTime = 0.0f;
-	float lastFrame = 0.0f;
-
-	float fps = 0.0f;
-	float frameTimeMs = 0.0f;
-
-	int frameCount = 0;
-	float timeAccumulator = 0.0f;
-
-	float totalTime = 0.0f;
 
 public:
 	Engine() = default;
@@ -38,6 +29,7 @@ public:
 	bool ShouldClose() const { return m_renderer.ShouldClose(); }
 
 	Camera& GetCamera() { return m_renderer.GetCamera(); }
+	bool ShouldTick(double tickTime) { return m_time.ShouldTick(tickTime); }
 
 	int Init();
 	void Shutdown();

@@ -7,6 +7,25 @@
 #include "Transform.h"
 #include "Frustum.h"
 
+// Default camera speed. Later camera will not have his own speed and ill moved by player
+constexpr float kDefaultCameraSpeed = 5.0f;
+
+// Default sensitivity
+constexpr float kDefaultMouseSensitivity = 0.1f;
+
+// Default Zoom Degrees (FOV)
+constexpr float kDefaultZoomDegrees = 90.0f;
+
+// Limit for pitch to avoid gimbal lock (looking straight up or down)
+constexpr float kpitchLimitDeg = 89.0f;
+
+// Default near and far planes for projection matrix
+constexpr float kDefaultNearPlane = 0.1f;
+
+// Note: far plane should be as small as possible for better depth precision, but large enough to encompass the scene.
+constexpr float kDefaultFarPlane = 500.0f;
+
+// Camera movement directions for keyboard input processing
 enum class CameraMovement
 {
     Forward,
@@ -22,12 +41,11 @@ class Camera
 public:
     Transform transform{};
 
-    float movementSpeed = 5.0f;
-    float mouseSensitivity = 0.1f;
-    float zoomDegrees = 90.0f;
+    float movementSpeed = kDefaultCameraSpeed;
+    float mouseSensitivity = kDefaultMouseSensitivity;
+    float zoomDegrees = kDefaultZoomDegrees;
 
     bool  constrainPitch = true;
-    float pitchLimitDeg = 89.0f;
 
     float yawDeg = -90.0f;
     float pitchDeg = 0.0f;
@@ -55,8 +73,8 @@ public:
 
     glm::mat4 GetProjectionMatrix(
         float aspect,
-        float nearPlane = 0.1f,
-        float farPlane = 1000.0f) const
+        float nearPlane = kDefaultNearPlane,
+        float farPlane = kDefaultFarPlane) const
     {
         return glm::perspective(
             glm::radians(zoomDegrees),
@@ -73,7 +91,7 @@ public:
     glm::vec3 Right()    const noexcept { return transform.Right(); }
     glm::vec3 Up()       const noexcept { return transform.Up(); }
 
-    Frustum GetFrustum(float aspect, float nearPlane = 0.1f, float farPlane = 1000.0f) const
+    Frustum GetFrustum(float aspect, float nearPlane = kDefaultNearPlane, float farPlane = kDefaultFarPlane) const
     {
         const glm::mat4 P = GetProjectionMatrix(aspect, nearPlane, farPlane);
         const glm::mat4 V = GetViewMatrix();
@@ -108,8 +126,8 @@ public:
 
         if (constrainPitch)
         {
-            if (pitchDeg > pitchLimitDeg) pitchDeg = pitchLimitDeg;
-            if (pitchDeg < -pitchLimitDeg) pitchDeg = -pitchLimitDeg;
+            if (pitchDeg > kpitchLimitDeg) pitchDeg = kpitchLimitDeg;
+            if (pitchDeg < -kpitchLimitDeg) pitchDeg = -kpitchLimitDeg;
         }
 
         ApplyYawPitchToRotation();
@@ -119,7 +137,7 @@ public:
     {
         zoomDegrees -= yoffset;
         if (zoomDegrees < 1.0f)  zoomDegrees = 1.0f;
-        if (zoomDegrees > 90.0f) zoomDegrees = 90.0f;
+        if (zoomDegrees > kDefaultZoomDegrees) zoomDegrees = kDefaultZoomDegrees;
     }
 
     void LookAt(const glm::vec3& target)

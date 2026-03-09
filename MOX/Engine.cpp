@@ -11,6 +11,8 @@ int Engine::Init()
 		return result;
 	}
 
+	m_time.Init(m_renderer.GetTime());
+
 	m_isInit = true;
 }
 
@@ -21,33 +23,30 @@ void Engine::Shutdown()
 
 void Engine::Frame(const Scene& scene)
 {
-	if (!m_isInit) {
-		std::cout << "Engine::Frame() called before successful initialization\n";
-		return;
-	}
+    if (!m_isInit)
+    {
+        std::cout << "Engine::Frame() called before successful initialization\n";
+        return;
+    }
 
-	if (m_renderer.ShouldClose()) {
-		std::cout << "Renderer signaled to close. Exiting main loop.\n";
-		return;
-	}
+    if (m_renderer.ShouldClose()) {
+		std::cout << "Stoped" << std::endl;
+        return;
+    }
 
-	const float currentFrame = m_renderer.GetTime();
-	deltaTime = currentFrame - lastFrame;
-	lastFrame = currentFrame;
+    double currentTime = m_renderer.GetTime();
 
-	// FPS calc
-	frameCount++;
-	timeAccumulator += deltaTime;
-	if (timeAccumulator >= 0.5f)
-	{
-		fps = frameCount / timeAccumulator;
-		frameTimeMs = 1000.0f / fps;
-		frameCount = 0;
-		timeAccumulator = 0.0f;
-	}
-	totalTime += deltaTime;
+    m_time.Update(currentTime);
 
-	m_renderer.BeginFrame(deltaTime);
-	m_renderer.Render(scene, fps, frameTimeMs, deltaTime, totalTime);
-	m_renderer.EndFrame();
+    m_renderer.BeginFrame(m_time.GetDeltaTime());
+
+    m_renderer.Render(
+        scene,
+        m_time.GetFPS(),
+        m_time.GetFrameTimeMs(),
+        m_time.GetDeltaTime(),
+        m_time.GetTotalTime()
+    );
+
+    m_renderer.EndFrame();
 }

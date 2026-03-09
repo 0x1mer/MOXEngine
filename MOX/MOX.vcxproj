@@ -170,6 +170,7 @@
   <ItemGroup>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Engine.h" />
+    <ClInclude Include="EngineTime.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Frustum.h" />
     <ClInclude Include="Mesh.h" />
