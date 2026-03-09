@@ -4,7 +4,7 @@
 #include <cassert>
 
 Chunk::Chunk()
-    : position(0, 0, 0), dirty(true)
+    : position(0, 0, 0), m_dirty(true)
 {
     for (int i = 0; i < CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE; ++i)
     {
@@ -13,7 +13,7 @@ Chunk::Chunk()
 }
 
 Chunk::Chunk(const ChunkPos& pos)
-    : position(pos), dirty(true)
+    : position(pos), m_dirty(true)
 {
     for (int i = 0; i < CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE; ++i)
     {
@@ -52,7 +52,7 @@ void Chunk::SetBlock(const BlockPos& pos, const Block& block)
 
     blocks[Index(pos)] = block;
 
-    dirty = true;
+    m_dirty = true;
 }
 
 bool Chunk::IsAir(const BlockPos& pos)
@@ -83,11 +83,44 @@ void AddFace(const FaceMesh& face, glm::vec3 pos, std::vector<Vertex>& vertices_
 
 bool Chunk::IsFaceVisible(const BlockPos& pos) const
 {
-    if (pos.x < 0 || pos.y < 0 || pos.z < 0 ||
-        pos.x >= CHUNK_SIZE || pos.y >= CHUNK_SIZE || pos.z >= CHUNK_SIZE)
+    const Chunk* chunk = this;
+    BlockPos local = pos;
+
+    if (pos.x < 0)
+    {
+        chunk = nearestChunks.left;
+        local.x = CHUNK_SIZE - 1;
+    }
+    else if (pos.x >= CHUNK_SIZE)
+    {
+        chunk = nearestChunks.right;
+        local.x = 0;
+    }
+    else if (pos.y < 0)
+    {
+        chunk = nearestChunks.down;
+        local.y = CHUNK_SIZE - 1;
+    }
+    else if (pos.y >= CHUNK_SIZE)
+    {
+        chunk = nearestChunks.up;
+        local.y = 0;
+    }
+    else if (pos.z < 0)
+    {
+        chunk = nearestChunks.back;
+        local.z = CHUNK_SIZE - 1;
+    }
+    else if (pos.z >= CHUNK_SIZE)
+    {
+        chunk = nearestChunks.front;
+        local.z = 0;
+    }
+
+    if (!chunk)
         return true;
 
-    const Block& neighbour = GetBlock(pos);
+    const Block& neighbour = chunk->GetBlock(local);
 
     if (neighbour.metadata.id == 0)
         return true;

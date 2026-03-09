@@ -8,8 +8,96 @@
 
 #include "MemOx/object_pool.hpp"
 
+constexpr int kChunkRemeshByTickLimit = 4;
+
+static constexpr ChunkPos s_directions[6] =
+{
+	{ 1, 0, 0 },
+	{-1, 0, 0 },
+	{ 0, 1, 0 },
+	{ 0,-1, 0 },
+	{ 0, 0, 1 },
+	{ 0, 0,-1 }
+};
+
+static constexpr Chunk * Chunk::NearestChunks:: * s_thisPtrs[6] =
+{
+	&Chunk::NearestChunks::right,
+	&Chunk::NearestChunks::left,
+	&Chunk::NearestChunks::up,
+	&Chunk::NearestChunks::down,
+	&Chunk::NearestChunks::front,
+	&Chunk::NearestChunks::back
+};
+
+static constexpr Chunk* Chunk::NearestChunks::* s_otherPtrs[6] =
+{
+	&Chunk::NearestChunks::left,
+	&Chunk::NearestChunks::right,
+	&Chunk::NearestChunks::down,
+	&Chunk::NearestChunks::up,
+	&Chunk::NearestChunks::back,
+	&Chunk::NearestChunks::front
+};
+
 class ChunkController
 {
+private:
+
+	void MarkNeighboursDirty(Chunk* chunk)
+	{
+		for (int i = 0; i < 6; i++)
+		{
+			Chunk* neighbour = chunk->nearestChunks.*(s_thisPtrs[i]);
+
+			if (neighbour && neighbour->MarkDirty())
+				m_meshQueue.push(neighbour);
+		}
+	}
+
+	void LinkNeighbours(const ChunkPos& pos, Chunk* chunk)
+	{
+		for (int i = 0; i < 6; i++)
+		{
+			ChunkPos neighbourPos =
+			{
+				pos.x + s_directions[i].x,
+				pos.y + s_directions[i].y,
+				pos.z + s_directions[i].z
+			};
+
+			auto it = m_loadedChunks.find(neighbourPos);
+			if (it == m_loadedChunks.end())
+				continue;
+
+			Chunk* neighbour = it->second.get();
+
+			chunk->nearestChunks.*(s_thisPtrs[i]) = neighbour;
+			neighbour->nearestChunks.*(s_otherPtrs[i]) = chunk;
+		}
+	}
+
+	void UnlinkNeighbours(const ChunkPos& pos, Chunk* chunk)
+	{
+		for (int i = 0; i < 6; i++)
+		{
+			ChunkPos neighbourPos =
+			{
+				pos.x + s_directions[i].x,
+				pos.y + s_directions[i].y,
+				pos.z + s_directions[i].z
+			};
+
+			auto it = m_loadedChunks.find(neighbourPos);
+			if (it == m_loadedChunks.end())
+				continue;
+
+			Chunk* neighbour = it->second.get();
+
+			neighbour->nearestChunks.*(s_otherPtrs[i]) = nullptr;
+		}
+	}
+
 private:
 	int m_chunkLoadRadius = 5;
 	ObjectPool<Chunk> m_chunkPool;
@@ -20,6 +108,7 @@ private:
 
 	std::queue<ChunkPos> m_loadQueue;
 	std::queue<ChunkPos> m_unloadQueue;
+	std::queue<Chunk*> m_meshQueue;
 
 	std::unordered_set<ChunkPos> m_loadSet;
 	std::unordered_set<ChunkPos> m_unloadSet;
@@ -30,8 +119,8 @@ private:
 public:
 	explicit ChunkController(size_t chunkLoadRadius_, Scene* scene, Shader* chunkShader) :
 		m_chunkLoadRadius(chunkLoadRadius_),
-		m_chunkPool((chunkLoadRadius_ * 2 + 1) * (chunkLoadRadius_ * 2 + 1) * (chunkLoadRadius_ * 2 + 1) + 
-		0.2 * (chunkLoadRadius_ * 2 + 1) * (chunkLoadRadius_ * 2 + 1) * (chunkLoadRadius_ * 2 + 1)),
+		m_chunkPool((chunkLoadRadius_ * 2 + 1)* (chunkLoadRadius_ * 2 + 1)* (chunkLoadRadius_ * 2 + 1) +
+			0.2 * (chunkLoadRadius_ * 2 + 1) * (chunkLoadRadius_ * 2 + 1) * (chunkLoadRadius_ * 2 + 1)),
 		m_scene(scene),
 		m_chunkShader(chunkShader)
 	{
@@ -39,6 +128,15 @@ public:
 	}
 	// For now, later we need to correct unload chunks
 	~ChunkController() = default;
+
+	Chunk* GetChunk(const ChunkPos& pos)
+	{
+		auto it = m_loadedChunks.find(pos);
+		if (it == m_loadedChunks.end())
+			return nullptr;
+
+		return it->second.get();
+	}
 
 	Chunk* GetOrCreateChunk(const ChunkPos& pos)
 	{
@@ -62,11 +160,16 @@ public:
 						iter->second->SetBlock({ x,y,z }, BlockRegistry::GetBlock("grass_block"));
 				}
 
-		iter->second->BuildMesh();
-		auto model = iter->second->CreateModel(m_chunkShader);
-		iter->second->sceneNode = m_scene->AddModel(std::move(model));
 
-		return iter->second.get();
+		Chunk* chunk = iter->second.get();
+
+		chunk->MarkDirty();
+		m_meshQueue.push(chunk);
+
+		LinkNeighbours(pos, chunk);
+		MarkNeighboursDirty(chunk);
+
+		return chunk;
 	}
 
 	void UnloadChunk(const ChunkPos& pos)
@@ -80,8 +183,44 @@ public:
 		if (chunk->sceneNode != UINT64_MAX)
 			m_scene->RemoveModel(chunk->sceneNode);
 
+		for (int i = 0; i < 6; i++)
+		{
+			Chunk* neighbour = chunk->nearestChunks.*(s_thisPtrs[i]);
+
+			if (!chunk || !chunk->IsDirty())
+				continue;
+
+			if (neighbour && neighbour->MarkDirty())
+				m_meshQueue.push(neighbour);
+		}
+		UnlinkNeighbours(pos, chunk);
+
 		it->second.reset();
 		m_loadedChunks.erase(it);
+	}
+
+	void UpdateMeshes()
+	{
+		int limit = kChunkRemeshByTickLimit;
+		while (!m_meshQueue.empty() && limit--)
+		{
+			Chunk* chunk = m_meshQueue.front();
+			m_meshQueue.pop();
+
+			if (!chunk->IsDirty())
+				continue;
+
+			chunk->BuildMesh();
+
+			auto model = chunk->CreateModel(m_chunkShader);
+
+			if (chunk->sceneNode != UINT64_MAX)
+				m_scene->RemoveModel(chunk->sceneNode);
+
+			chunk->sceneNode = m_scene->AddModel(std::move(model));
+
+			chunk->MarkClean();
+		}
 	}
 
 	void UpdateChunks(const ChunkPos& playerChunkPos)
@@ -120,6 +259,9 @@ public:
 
 	void ProcessQueues()
 	{
+
+		UpdateMeshes();
+
 		// unload
 		int unloads = 0;
 		while (!m_unloadQueue.empty() && unloads < m_maxChunkUnloadsPerTick)

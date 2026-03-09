@@ -25,7 +25,7 @@ struct ChunkPos {
 	int x;
 	int y;
 	int z;
-	ChunkPos(int x, int y, int z) : x(x), y(y), z(z) {}
+	constexpr ChunkPos(int x, int y, int z) : x(x), y(y), z(z) {}
 
 	bool operator==(const ChunkPos&) const = default;
 };
@@ -53,6 +53,18 @@ struct std::hash<ChunkPos>
 class Chunk
 {
 public:
+
+	struct NearestChunks {
+		Chunk* left = nullptr;
+		Chunk* right = nullptr;
+		Chunk* front = nullptr;
+		Chunk* back = nullptr;
+		Chunk* up = nullptr;
+		Chunk* down = nullptr;
+	};
+
+	NearestChunks nearestChunks;
+
 	Chunk();
 	Chunk(const ChunkPos& pos);
 	~Chunk();
@@ -66,6 +78,17 @@ public:
 	void SetBlock(const BlockPos& pos, const Block& block);
 	void BuildMesh();
 	Model CreateModel(Shader* shader) const;
+
+	bool MarkDirty()
+	{
+		if (m_dirty)
+			return false;
+
+		m_dirty = true;
+		return true;
+	}
+	void MarkClean() { m_dirty = false; }
+	bool IsDirty() const { return m_dirty; }
 
 private:
 	static inline int Index(int x, int y, int z)
@@ -86,5 +109,5 @@ private:
 	ChunkPos position;
 	MeshGPU chunkMesh;
 
-	bool dirty = false;
+	bool m_dirty = false;
 };
