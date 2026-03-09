@@ -104,7 +104,7 @@ public:
 	Renderer& operator=(Renderer&&) = delete;
 
 	[[nodiscard]] bool ShouldClose() const;
-	float GetTime() const;
+	double GetTime() const;
 
     using MouseButtonCallbackFn =
         std::function<void(int button, int action, int mods)>;
@@ -115,14 +115,14 @@ public:
 
 	int Init();
 
-	void BeginFrame(float deltaTime);
-	void RenderModels(const Scene& scene, float totalTime);
+	void BeginFrame(double deltaTime);
+	void RenderModels(const Scene& scene, double totalTime);
 	void Render(
         const Scene& scene,
-		float fps,
-		float frameTimeMs,
-		float deltaTime,
-		float totalTime);
+        double fps,
+        double frameTimeMs,
+        double deltaTime,
+		double totalTime);
 	void EndFrame();
 
     Camera& GetCamera() {

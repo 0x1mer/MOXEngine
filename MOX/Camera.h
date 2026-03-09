@@ -98,9 +98,9 @@ public:
         return Frustum::FromMatrix(P * V);
     }
 
-    void ProcessKeyboard(CameraMovement dir, float dt)
+    void ProcessKeyboard(CameraMovement dir, double dt)
     {
-        const float v = movementSpeed * dt;
+        const float v = movementSpeed * static_cast<float>(dt);
 
         const glm::vec3 f = glm::normalize(glm::vec3(Forward().x, 0.0f, Forward().z));
         const glm::vec3 r = glm::normalize(glm::vec3(Right().x, 0.0f, Right().z));
