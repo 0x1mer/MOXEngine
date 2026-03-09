@@ -21,6 +21,15 @@ struct BlockPos {
 	BlockPos(int x, int y, int z) : x(x), y(y), z(z) {}
 };
 
+inline BlockPos WorldToLocal(const BlockPos& pos)
+{
+	return {
+		(pos.x % CHUNK_SIZE + CHUNK_SIZE) % CHUNK_SIZE,
+		(pos.y % CHUNK_SIZE + CHUNK_SIZE) % CHUNK_SIZE,
+		(pos.z % CHUNK_SIZE + CHUNK_SIZE) % CHUNK_SIZE
+	};
+}
+
 struct ChunkPos {
 	int x;
 	int y;
@@ -74,8 +83,8 @@ public:
 
 	Block& GetBlock(const BlockPos& pos);
 	const Block& GetBlock(const BlockPos& pos) const;
-
 	void SetBlock(const BlockPos& pos, const Block& block);
+
 	void BuildMesh();
 	Model CreateModel(Shader* shader) const;
 

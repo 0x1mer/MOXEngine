@@ -172,6 +172,12 @@ public:
 		return chunk;
 	}
 
+	void AddChunkToMeshQueue(Chunk* chunk)
+	{
+		if (chunk->MarkDirty())
+			m_meshQueue.push(chunk);
+	}
+
 	void UnloadChunk(const ChunkPos& pos)
 	{
 		auto it = m_loadedChunks.find(pos);
@@ -197,6 +203,33 @@ public:
 
 		it->second.reset();
 		m_loadedChunks.erase(it);
+	}
+
+	// using in set block, because we need to remesh chunk immediately, and not wait until next tick
+	void ForceRemeshChunk(Chunk* chunk)
+	{
+		if (!chunk)
+			return;
+
+		chunk->BuildMesh();
+
+		auto model = chunk->CreateModel(m_chunkShader);
+
+		if (chunk->sceneNode != UINT64_MAX)
+			m_scene->RemoveModel(chunk->sceneNode);
+
+		chunk->sceneNode = m_scene->AddModel(std::move(model));
+
+		chunk->MarkClean();
+	}
+
+	void ForceRemeshChunk(const ChunkPos& pos)
+	{
+		Chunk* chunk = GetChunk(pos);
+		if (!chunk)
+			return;
+
+		ForceRemeshChunk(chunk);
 	}
 
 	void UpdateMeshes()

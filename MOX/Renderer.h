@@ -6,10 +6,13 @@
 #include "Model.h"
 #include "Camera.h"
 #include "Scene.h"
+#include "MOX_API.h"
 
 struct GLFWwindow;
 
-class Renderer
+// TODO: THIS CLASS IS A BIG MESS, IT NEEDS TO BE REWORKED, SPLIT INTO SEVERAL CLASSES, AND CAMERA LOGIC MUST BE REMOVED FROM HERE
+// it is must be not MOX_API
+class MOX_API Renderer
 {
 private:
 	GLFWwindow* m_window = nullptr;
@@ -102,6 +105,13 @@ public:
 
 	[[nodiscard]] bool ShouldClose() const;
 	float GetTime() const;
+
+    using MouseButtonCallbackFn =
+        std::function<void(int button, int action, int mods)>;
+
+    // When camera logic will be removed from cpp, we need to move this into ptivate section
+    MouseButtonCallbackFn m_mouseButtonCallback;
+    void SetMouseButtonCallback(MouseButtonCallbackFn callback);
 
 	int Init();
 

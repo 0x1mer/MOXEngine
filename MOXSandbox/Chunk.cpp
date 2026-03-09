@@ -51,8 +51,6 @@ void Chunk::SetBlock(const BlockPos& pos, const Block& block)
     assert(pos.z >= 0 && pos.z < CHUNK_SIZE);
 
     blocks[Index(pos)] = block;
-
-    m_dirty = true;
 }
 
 bool Chunk::IsAir(const BlockPos& pos)

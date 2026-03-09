@@ -55,6 +55,19 @@ namespace {
 		camera.ProcessMouseMovement(xoffset, yoffset);
 	}
 
+	void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
+	{
+		auto* renderer = static_cast<Renderer*>(glfwGetWindowUserPointer(window));
+		if (!renderer) return;
+
+		ImGuiIO& io = ImGui::GetIO();
+		if (io.WantCaptureMouse)
+			return;
+
+		if (renderer->m_mouseButtonCallback)
+			renderer->m_mouseButtonCallback(button, action, mods);
+	}
+
 	void CursorOn(GLFWwindow* window) {
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 		isMouseLocked = false;
@@ -125,6 +138,11 @@ float Renderer::GetTime() const
 	return static_cast<float>(glfwGetTime());
 }
 
+void Renderer::SetMouseButtonCallback(MouseButtonCallbackFn callback)
+{
+	m_mouseButtonCallback = std::move(callback);
+}
+
 void FramebufferSizeCallback(GLFWwindow* window, int width, int height)
 {
 	glViewport(0, 0, width, height);
@@ -180,6 +198,7 @@ int Renderer::Init()
 	glfwSetCursorPosCallback(m_window, MouseCallback);
 	glfwSetScrollCallback(m_window, ScrollCallback);
 	glfwSetKeyCallback(m_window, KeyCallback);
+	glfwSetMouseButtonCallback(m_window, MouseButtonCallback);
 
 	// capture mouse
 	glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);

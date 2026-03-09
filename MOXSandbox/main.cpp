@@ -37,11 +37,53 @@ int main()
 
     Shader* worldShader = &shaderManager.GetShader(0);
 
-	World world(5, worldShader);
+	World world(4, worldShader);
+
+    int tickCounter = 0;
+    int yForTest = 30;
+
+	Block pickedBlock = BlockRegistry::GetBlock("dirt");
+
+	// TODO: remove this, move to a separate InputAction logic (class, component, etc.)
+    // Cause now i use concret numbers except GLFW defines, thats not good
+    engine.GetRenderer().SetMouseButtonCallback(
+        [&](int button, int action, int mods)
+        {
+            auto hit = world.Raycast(engine.GetCamera().Position(), engine.GetCamera().Forward(), 5.0f);
+            if (button == 0 && action == 1)
+            {
+                if (hit.hit) {
+                    world.SetBlock(hit.blockPos, AIR_BLOCK);
+                }
+            }
+
+            if (button == 1 && action == 1)
+            {
+                if (hit.hit) {
+                    BlockPos placePos = hit.previousPos;
+                    world.SetBlock(placePos, BlockRegistry::GetBlock("dirt"));
+				}
+            }
+
+            if (button == 2 && action == 1)
+            {
+                std::cout << "Pick block\n";
+            }
+        }
+    );
 
     while (!engine.ShouldClose()) {
         while (engine.ShouldTick(TICK_TIME)) {
             world.Tick(WorldToChunk(engine.GetCamera().Position()));
+
+            tickCounter++;
+
+            if (tickCounter % 40 == 0)
+            {
+                world.SetBlock({ 0, yForTest, 0 }, BlockRegistry::GetBlock("dirt"));
+                yForTest++;
+				tickCounter = 0;
+            }
         }
         engine.Frame(world.GetScene());
     }

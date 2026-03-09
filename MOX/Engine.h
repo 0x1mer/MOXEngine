@@ -21,6 +21,9 @@ public:
 
 	double GetTime() const { return m_renderer.GetTime(); }
 
+	// TODO: remove this when it ill be possible
+	Renderer& GetRenderer() { return m_renderer; }
+
 	Engine(const Engine&) = delete;
 	Engine& operator=(const Engine&) = delete;
 	Engine(Engine&&) = delete;
