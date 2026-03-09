@@ -15,6 +15,8 @@
 #include "BlocksIncluder.h"
 #include "ChunkController.h"
 
+#include "World.h"
+
 const double TICK_RATE = 20.0;
 const double TICK_TIME = 1.0 / TICK_RATE; // 0.05 sec
 
@@ -23,12 +25,9 @@ int main()
     Engine engine;
     engine.Init();
 
-    double accumulator = 0.0;
-    double lastTime = engine.GetTime();
-
     TextureAtlas& atlas = TextureAtlas::Instance();
     atlas.BuildAtlas();
-    atlas.UploadToOpenGL(true);
+    atlas.UploadToOpenGL(/*generateMipMaps*/ true);
 
     ShaderManager shaderManager;
     shaderManager.LoadShader(
@@ -36,26 +35,15 @@ int main()
         "C:/Users/Oximer/source/repos/MOX/Shaders/4.3.shader.fs"
     );
 
-    Shader* shader = &shaderManager.GetShader(0);
-    Scene scene;
+    Shader* worldShader = &shaderManager.GetShader(0);
 
-    ChunkController chunkController(4, &scene, shader);
-
-    ChunkPos cachedPlayerChunkPos(UINT64_MAX, UINT64_MAX, UINT64_MAX);
+	World world(5, worldShader);
 
     while (!engine.ShouldClose()) {
         while (engine.ShouldTick(TICK_TIME)) {
-            ChunkPos playerChunk = WorldToChunk(engine.GetCamera().Position());
-
-            if (cachedPlayerChunkPos != playerChunk)
-            {
-                cachedPlayerChunkPos = playerChunk;
-                chunkController.UpdateChunks(playerChunk);
-            }
-
-            chunkController.ProcessQueues();
+            world.Tick(WorldToChunk(engine.GetCamera().Position()));
         }
-        engine.Frame(scene);
+        engine.Frame(world.GetScene());
     }
 
     return 0;

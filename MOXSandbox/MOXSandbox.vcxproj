@@ -155,6 +155,7 @@
     <ClCompile Include="Chunk.cpp" />
     <ClCompile Include="ChunkController.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MOX\MOX.vcxproj">
@@ -177,6 +178,7 @@
     <ClInclude Include="ChunkController.h" />
     <ClInclude Include="Dirt.h" />
     <ClInclude Include="GrassBlock.h" />
+    <ClInclude Include="World.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
