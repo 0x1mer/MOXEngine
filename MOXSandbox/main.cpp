@@ -37,7 +37,11 @@ int main()
 
     Shader* worldShader = &shaderManager.GetShader(0);
 
-	World world(4, worldShader);
+#ifdef DEBUG
+    World world(4, worldShader);
+#else
+    World world(10, worldShader);
+#endif // DEBUG
 
     int tickCounter = 0;
     int yForTest = 30;

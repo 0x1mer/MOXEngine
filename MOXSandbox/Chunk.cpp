@@ -8,7 +8,7 @@ Chunk::Chunk()
 {
     for (int i = 0; i < CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE; ++i)
     {
-        blocks[i] = Block({ 0, "air" });
+        blocks[i] = AIR_BLOCK;
 	}
 }
 
@@ -17,7 +17,7 @@ Chunk::Chunk(const ChunkPos& pos)
 {
     for (int i = 0; i < CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE; ++i)
     {
-        blocks[i] = Block({ 0, "air" });
+        blocks[i] = AIR_BLOCK;
     }
 }
 

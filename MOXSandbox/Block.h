@@ -45,7 +45,7 @@ inline BlockFlags operator&(BlockFlags a, BlockFlags b)
 
 struct BlockMetadata {
     BlockTypeId id;
-    std::string_view name;
+    const char* name;
 };
 
 struct BlockType {

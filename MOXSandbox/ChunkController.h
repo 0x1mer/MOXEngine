@@ -8,8 +8,6 @@
 
 #include "MemOx/object_pool.hpp"
 
-constexpr int kChunkRemeshByTickLimit = 4;
-
 static constexpr ChunkPos s_directions[6] =
 {
 	{ 1, 0, 0 },
@@ -113,8 +111,15 @@ private:
 	std::unordered_set<ChunkPos> m_loadSet;
 	std::unordered_set<ChunkPos> m_unloadSet;
 
+#ifdef DEBUG
 	int m_maxChunkLoadsPerTick = 4;
 	int m_maxChunkUnloadsPerTick = 8;
+	int m_chunkRemeshByTickLimit = 4;
+#else
+	int m_maxChunkLoadsPerTick = 32;
+	int m_maxChunkUnloadsPerTick = 64;
+	int m_chunkRemeshByTickLimit = 64;
+#endif // DEBUG
 
 public:
 	explicit ChunkController(size_t chunkLoadRadius_, Scene* scene, Shader* chunkShader) :
@@ -234,7 +239,7 @@ public:
 
 	void UpdateMeshes()
 	{
-		int limit = kChunkRemeshByTickLimit;
+		int limit = m_chunkRemeshByTickLimit;
 		while (!m_meshQueue.empty() && limit--)
 		{
 			Chunk* chunk = m_meshQueue.front();

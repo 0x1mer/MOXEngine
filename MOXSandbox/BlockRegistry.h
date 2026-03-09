@@ -9,13 +9,6 @@
 
 #include "Block.h"
 
-static const Block AIR_BLOCK{
-    {
-        .id = 0,
-        .name = "air"
-    }
-};
-
 class BlockRegistry
 {
 public:
@@ -42,7 +35,7 @@ public:
     {
         EnsureInitialized();
 
-        assert(!blockType.metadata.name.empty() && "Block name cannot be empty");
+        // assert(!blockType.metadata.name && "Block name cannot be empty");
 
         auto& nameMap = GetNameToIdMap();
         auto& blocks = GetBlocks();
@@ -88,11 +81,11 @@ public:
         return Get(GetId(name));
     }
 
-    static const Block& GetBlock(std::string_view name)
+    static Block GetBlock(std::string_view name)
     {
         const auto& type = Get(name);
         return Block{ type.metadata };
-	}
+    }
 
 private:
 
@@ -116,4 +109,11 @@ private:
 
 private:
     static inline bool initialized = false;
+};
+
+inline const Block AIR_BLOCK{
+    {
+        .id = 0,
+        .name = "air"
+    }
 };
