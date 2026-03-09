@@ -4,6 +4,7 @@
 
 #include "ShaderManager.h"
 #include "Model.h"
+#include "Camera.h"
 #include "Scene.h"
 
 struct GLFWwindow;
@@ -85,6 +86,9 @@ private:
 
 public:
 
+    // Camera
+    Camera camera = {};
+
 	int m_width = 800;
 	int m_height = 600;
 
@@ -102,7 +106,7 @@ public:
 	int Init();
 
 	void BeginFrame(float deltaTime);
-	void RenderModels(const std::vector<Model>& models, float totalTime);
+	void RenderModels(const Scene& scene, float totalTime);
 	void Render(
         const Scene& scene,
 		float fps,
@@ -111,5 +115,9 @@ public:
 		float totalTime);
 	void EndFrame();
 
+    Camera& GetCamera() {
+		return camera;
+    }
+    
 	void Shutdown();
 };

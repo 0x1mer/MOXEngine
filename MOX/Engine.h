@@ -28,14 +28,18 @@ public:
 		Shutdown();
 	};
 
-	 Engine(const Engine&) = delete;
-	 Engine& operator=(const Engine&) = delete;
-	 Engine(Engine&&) = delete;
-	 Engine& operator=(Engine&&) = delete;
+	double GetTime() const { return m_renderer.GetTime(); }
 
-	 bool ShouldClose() const { return m_renderer.ShouldClose(); }
+	Engine(const Engine&) = delete;
+	Engine& operator=(const Engine&) = delete;
+	Engine(Engine&&) = delete;
+	Engine& operator=(Engine&&) = delete;
 
-	 int Init();
-	 void Shutdown();
-	 void Frame(const Scene& scene);
+	bool ShouldClose() const { return m_renderer.ShouldClose(); }
+
+	Camera& GetCamera() { return m_renderer.GetCamera(); }
+
+	int Init();
+	void Shutdown();
+	void Frame(const Scene& scene);
 };

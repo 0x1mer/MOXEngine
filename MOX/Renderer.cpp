@@ -25,25 +25,29 @@ float lastX = kDefaultScreenWidth / 2.0f;
 float lastY = kDefaultScreenHeight / 2.0f;
 bool firstMouse = true;
 
-// Camera
-Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
-
 namespace {
 
-	void MouseCallback(GLFWwindow* /*window*/, double xposIn, double yposIn)
+	void MouseCallback(GLFWwindow* window, double xposIn, double yposIn)
 	{
-		if (!isMouseLocked) return;
-		const float xpos = static_cast<float>(xposIn);
-		const float ypos = static_cast<float>(yposIn);
+		auto* renderer = static_cast<Renderer*>(glfwGetWindowUserPointer(window));
+		if (!renderer) return;
 
-		if (firstMouse) {
+		Camera& camera = renderer->camera;
+
+		if (!isMouseLocked) return;
+
+		float xpos = static_cast<float>(xposIn);
+		float ypos = static_cast<float>(yposIn);
+
+		if (firstMouse)
+		{
 			lastX = xpos;
 			lastY = ypos;
 			firstMouse = false;
 		}
 
-		const float xoffset = lastX - xpos; 
-		const float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
+		float xoffset = lastX - xpos;
+		float yoffset = lastY - ypos;
 
 		lastX = xpos;
 		lastY = ypos;
@@ -75,12 +79,15 @@ namespace {
 			glfwSetWindowShouldClose(window, true);
 	}
 
-	void ScrollCallback(GLFWwindow* /*window*/, double /*xoffset*/, double yoffset)
+	void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
 	{
-		camera.ProcessMouseScroll(static_cast<float>(yoffset));
+		auto* renderer = static_cast<Renderer*>(glfwGetWindowUserPointer(window));
+		if (!renderer) return;
+
+		renderer->camera.ProcessMouseScroll(static_cast<float>(yoffset));
 	}
 
-	void ProcessInput(GLFWwindow* window, float deltaTime)
+	void ProcessInput(GLFWwindow* window, float deltaTime, Camera& camera)
 	{
 		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 			camera.ProcessKeyboard(CameraMovement::Forward, deltaTime);
@@ -221,7 +228,7 @@ int Renderer::Init()
 
 void Renderer::BeginFrame(float deltaTime)
 {
-	ProcessInput(m_window, deltaTime);
+	ProcessInput(m_window, deltaTime, camera);
 
 	glClearColor(130.0f / 255.0f, 175.0f / 255.0f, 255.0f / 255.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -232,7 +239,7 @@ void Renderer::BeginFrame(float deltaTime)
 }
 
 void Renderer::RenderModels(
-	const std::vector<Model>& models,
+	const Scene& scene,
 	float totalTime)
 {
 	const float aspect = static_cast<float>(m_width) / static_cast<float>(m_height);
@@ -243,9 +250,9 @@ void Renderer::RenderModels(
 
 	Shader* currentShader = nullptr;
 
-	for (const Model& modelObj : models)
+	for (const auto& [id, model] : scene.GetModels())
 	{
-		for (const auto& r : modelObj.GetRenderables())
+		for (const auto& r : model.GetRenderables())
 		{
 			if (!r.mesh || !r.mesh->IsValid())
 				continue;
@@ -326,7 +333,7 @@ void Renderer::Render(
 #ifdef MOX_ENABLE_PIPELINE_STATS
 	m_stats.BeginFrame();
 #endif
-	RenderModels(scene.GetModels(), totalTime);
+	RenderModels(scene, totalTime);
 #ifdef MOX_ENABLE_PIPELINE_STATS
 	m_stats.EndFrameAndResolvePrevious();
 #endif

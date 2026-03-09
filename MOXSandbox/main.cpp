@@ -2,6 +2,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include <iostream>
+#include <algorithm>
 
 #include "Engine.h"
 #include "Scene.h"
@@ -12,15 +13,22 @@
 #include "BlockRegistry.h"
 
 #include "BlocksIncluder.h"
+#include "ChunkController.h"
+
+const double TICK_RATE = 20.0;
+const double TICK_TIME = 1.0 / TICK_RATE; // 0.05 sec
 
 int main()
 {
     Engine engine;
     engine.Init();
 
+    double accumulator = 0.0;
+    double lastTime = engine.GetTime();
+
     TextureAtlas& atlas = TextureAtlas::Instance();
     atlas.BuildAtlas();
-	atlas.UploadToOpenGL(true);
+    atlas.UploadToOpenGL(true);
 
     ShaderManager shaderManager;
     shaderManager.LoadShader(
@@ -31,37 +39,39 @@ int main()
     Shader* shader = &shaderManager.GetShader(0);
     Scene scene;
 
-    Chunk chunk({ 0,0,0 });
+    ChunkController chunkController(4, &scene, shader);
 
-    for (int x = 0; x < CHUNK_SIZE; x++)
-    {
-        for (int z = 0; z < CHUNK_SIZE; z++)
-        {
-            float fx = (float)x * 0.5f;
-            float fz = (float)z * 0.5f;
-
-            float noise =
-                sinf(fx * 0.8f) +
-                cosf(fz * 0.8f);
-
-            int height = 3 + (int)(noise * 2.0f);
-
-            for (int y = 0; y <= height; y++)
-            {
-                if (y == height)
-                    chunk.SetBlock({ x,y,z }, BlockRegistry::GetBlock("grass_block"));
-                else
-                    chunk.SetBlock({ x,y,z }, BlockRegistry::GetBlock("dirt"));
-            }
-        }
-    }
-
-    chunk.BuildMesh();
-
-    scene.AddModel(chunk.CreateModel(shader));
+    ChunkPos cachedPlayerChunkPos(UINT64_MAX, UINT64_MAX, UINT64_MAX);
 
     while (!engine.ShouldClose())
     {
+		// frame time calculation
+        double currentTime = engine.GetTime();
+        double deltaTime = currentTime - lastTime;
+        lastTime = currentTime;
+
+		// lag compensation: if the game was paused or something, we don't want to update 1000 times in a row
+        deltaTime = std::min(deltaTime, 0.25);
+
+        accumulator += deltaTime;
+
+		// fixed tickrate update
+        while (accumulator >= TICK_TIME)
+        {
+            ChunkPos playerChunk = WorldToChunk(engine.GetCamera().Position());
+
+            if (cachedPlayerChunkPos != playerChunk)
+            {
+                cachedPlayerChunkPos = playerChunk;
+                chunkController.UpdateChunks(playerChunk);
+            }
+
+            chunkController.ProcessQueues();
+
+            accumulator -= TICK_TIME;
+        }
+
+		// frame update
         engine.Frame(scene);
     }
 

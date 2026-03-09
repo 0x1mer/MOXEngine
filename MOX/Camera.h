@@ -24,7 +24,7 @@ public:
 
     float movementSpeed = 5.0f;
     float mouseSensitivity = 0.1f;
-    float zoomDegrees = 45.0f;
+    float zoomDegrees = 90.0f;
 
     bool  constrainPitch = true;
     float pitchLimitDeg = 89.0f;
@@ -56,7 +56,7 @@ public:
     glm::mat4 GetProjectionMatrix(
         float aspect,
         float nearPlane = 0.1f,
-        float farPlane = 100.0f) const
+        float farPlane = 1000.0f) const
     {
         return glm::perspective(
             glm::radians(zoomDegrees),
@@ -73,7 +73,7 @@ public:
     glm::vec3 Right()    const noexcept { return transform.Right(); }
     glm::vec3 Up()       const noexcept { return transform.Up(); }
 
-    Frustum GetFrustum(float aspect, float nearPlane = 0.1f, float farPlane = 100.0f) const
+    Frustum GetFrustum(float aspect, float nearPlane = 0.1f, float farPlane = 1000.0f) const
     {
         const glm::mat4 P = GetProjectionMatrix(aspect, nearPlane, farPlane);
         const glm::mat4 V = GetViewMatrix();
@@ -119,7 +119,7 @@ public:
     {
         zoomDegrees -= yoffset;
         if (zoomDegrees < 1.0f)  zoomDegrees = 1.0f;
-        if (zoomDegrees > 45.0f) zoomDegrees = 45.0f;
+        if (zoomDegrees > 90.0f) zoomDegrees = 90.0f;
     }
 
     void LookAt(const glm::vec3& target)

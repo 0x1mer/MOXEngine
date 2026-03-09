@@ -19,6 +19,9 @@
     <Filter Include="Source\Blocks\BlocksDefinitions">
       <UniqueIdentifier>{8965be83-9207-46ee-9d27-ad4df5eaeb08}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\Chunks">
+      <UniqueIdentifier>{747fe2dc-8dc3-47a3-a5b5-47d3057b8418}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -28,13 +31,13 @@
       <Filter>Dependencies</Filter>
     </ClCompile>
     <ClCompile Include="Chunk.cpp">
-      <Filter>Source</Filter>
+      <Filter>Source\Chunks</Filter>
+    </ClCompile>
+    <ClCompile Include="ChunkController.cpp">
+      <Filter>Source\Chunks</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Chunk.h">
-      <Filter>Source</Filter>
-    </ClInclude>
     <ClInclude Include="Dirt.h">
       <Filter>Source\Blocks\BlocksDefinitions</Filter>
     </ClInclude>
@@ -58,6 +61,12 @@
     </ClInclude>
     <ClInclude Include="GrassBlock.h">
       <Filter>Source\Blocks\BlocksDefinitions</Filter>
+    </ClInclude>
+    <ClInclude Include="Chunk.h">
+      <Filter>Source\Chunks</Filter>
+    </ClInclude>
+    <ClInclude Include="ChunkController.h">
+      <Filter>Source\Chunks</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
