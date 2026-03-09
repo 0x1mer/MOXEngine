@@ -4,60 +4,7 @@
 #include "Mesh.h"
 #include "Model.h"
 
-constexpr int CHUNK_SIZE = 16;
-
-constexpr struct ChunkSize
-{
-	int x = CHUNK_SIZE;
-	int y = CHUNK_SIZE;
-	int z = CHUNK_SIZE;
-
-} CHUNK_SIZE_3D;
-
-struct BlockPos {
-	int x;
-	int y;
-	int z;
-	BlockPos(int x, int y, int z) : x(x), y(y), z(z) {}
-};
-
-inline BlockPos WorldToLocal(const BlockPos& pos)
-{
-	return {
-		(pos.x % CHUNK_SIZE + CHUNK_SIZE) % CHUNK_SIZE,
-		(pos.y % CHUNK_SIZE + CHUNK_SIZE) % CHUNK_SIZE,
-		(pos.z % CHUNK_SIZE + CHUNK_SIZE) % CHUNK_SIZE
-	};
-}
-
-struct ChunkPos {
-	int x;
-	int y;
-	int z;
-	constexpr ChunkPos(int x, int y, int z) : x(x), y(y), z(z) {}
-
-	bool operator==(const ChunkPos&) const = default;
-};
-
-inline ChunkPos WorldToChunk(const glm::vec3& pos)
-{
-	return ChunkPos{
-		(int)std::floor(pos.x / CHUNK_SIZE),
-		(int)std::floor(pos.y / CHUNK_SIZE),
-		(int)std::floor(pos.z / CHUNK_SIZE)
-	};
-}
-
-template<>
-struct std::hash<ChunkPos>
-{
-	size_t operator()(const ChunkPos& p) const noexcept
-	{
-		return ((size_t)p.x * 73856093) ^
-			((size_t)p.y * 19349663) ^
-			((size_t)p.z * 83492791);
-	}
-};
+#include "Coords.h"
 
 class Chunk
 {
@@ -70,9 +17,7 @@ public:
 		Chunk* back = nullptr;
 		Chunk* up = nullptr;
 		Chunk* down = nullptr;
-	};
-
-	NearestChunks nearestChunks;
+	} nearestChunks;
 
 	Chunk();
 	Chunk(const ChunkPos& pos);

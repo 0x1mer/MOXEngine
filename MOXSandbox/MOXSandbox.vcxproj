@@ -176,8 +176,10 @@
     <ClInclude Include="BlockTypes.h" />
     <ClInclude Include="Chunk.h" />
     <ClInclude Include="ChunkController.h" />
+    <ClInclude Include="Coords.h" />
     <ClInclude Include="Dirt.h" />
     <ClInclude Include="GrassBlock.h" />
+    <ClInclude Include="MathUtils.h" />
     <ClInclude Include="World.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -10,8 +10,8 @@ struct RaycastHit
 {
     bool hit = false;
 
-    BlockPos blockPos{ 0,0,0 };
-    BlockPos previousPos{ 0,0,0 };
+    BlockPos blockPos;
+    BlockPos previousPos;
 
     glm::ivec3 normal{ 0,0,0 };
     glm::vec3 hitPoint{ 0,0,0 };
