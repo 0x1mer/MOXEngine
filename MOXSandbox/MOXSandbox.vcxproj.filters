@@ -25,6 +25,9 @@
     <Filter Include="Source\Worlds">
       <UniqueIdentifier>{d9881e94-4df1-4887-8d76-5aa0a13db13b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\Utils">
+      <UniqueIdentifier>{fb8ed228-8d26-46ae-ac16-cfacc51b4a0e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -76,6 +79,12 @@
     </ClInclude>
     <ClInclude Include="World.h">
       <Filter>Source\Worlds</Filter>
+    </ClInclude>
+    <ClInclude Include="Coords.h">
+      <Filter>Source\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="MathUtils.h">
+      <Filter>Source\Utils</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
