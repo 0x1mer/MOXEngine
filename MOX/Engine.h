@@ -2,6 +2,7 @@
 
 #include "MOX_API.h"
 
+#include "Paths.h"
 #include "Renderer.h"
 #include "EngineTime.h"
 
