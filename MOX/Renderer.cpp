@@ -12,6 +12,8 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 
+#include "TextureAtlas.h"
+
 uint64_t totalTriangles = 0;
 uint64_t totalDrawCalls = 0;
 
@@ -293,7 +295,8 @@ void Renderer::RenderModels(
 				currentShader->setBool("isLightEnabled", m_isLightEnabled);
 
 				glActiveTexture(GL_TEXTURE0);
-				glBindTexture(GL_TEXTURE_2D, 1);
+				glBindTexture(GL_TEXTURE_2D, TextureAtlas::Instance().GetGLTexture());
+
 				currentShader->setInt("uAtlas", 0);
 			}
 
