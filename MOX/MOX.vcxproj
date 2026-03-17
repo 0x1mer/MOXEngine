@@ -173,6 +173,7 @@
     <ClInclude Include="EngineTime.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Frustum.h" />
+    <ClInclude Include="Logger.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="MOX_API.h" />
@@ -202,6 +203,7 @@
     </ClCompile>
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="Engine.cpp" />
+    <ClCompile Include="Logger.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="MOX_API.cpp" />
     <ClCompile Include="Paths.cpp" />
