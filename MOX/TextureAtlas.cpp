@@ -36,7 +36,7 @@ bool TextureAtlas::AddTexture(std::string name, const std::string& pngPath)
 
     m_tiles.emplace_back(std::move(t));
 
-	std::cout << "Added tile: " << name << " from " << pngPath << std::endl;
+    LOG("Added tile:" + std::string(name) + "from" + std::string(pngPath));
 
     return true;
 }

@@ -115,7 +115,6 @@ Mesh Primitives::CreateSphere(float radius, unsigned int sectorCount, unsigned i
         }
     }
 
-    // Индексы (треугольники между кольцами)
     indices.reserve(stackCount * sectorCount * 6);
 
     for (unsigned int i = 0; i < stackCount; ++i)
@@ -253,7 +252,7 @@ Mesh Primitives::CreateIcoSphere(float radius, unsigned int subdivisions)
         const glm::vec3 pos = pUnit * radius;
         const glm::vec3 nrm = pUnit; // already unit
 
-        // UV for icosphere: spherical mapping (будет seam, но ок для базового)
+        // UV for icosphere: spherical mapping
         const float u = 0.5f + std::atan2(nrm.z, nrm.x) / (2.0f * 3.14159265359f);
         const float v = 0.5f - std::asin(nrm.y) / 3.14159265359f;
 

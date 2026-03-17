@@ -102,7 +102,7 @@ namespace bb
     {
         // ѕоддержка двух форматов:
         // 1) {"angle": -27.5, "axis":"y", "origin":[...]}
-        // 2) {"x":0,"y":-137.5,"z":0,"origin":[...]}  (как в твоЄм примере)
+        // 2) {"x":0,"y":-137.5,"z":0,"origin":[...]}
         glm::vec3 origin(0.0f);
         if (rotation.contains("origin"))
             origin = ReadVec3(rotation.at("origin")) * unitScale;
@@ -129,7 +129,6 @@ namespace bb
             float y = rotation.value("y", 0.0f);
             float z = rotation.value("z", 0.0f);
 
-            // ѕор€док можно мен€ть Ч Blockbench обычно ожидает XYZ (как записано)
             M = glm::rotate(M, glm::radians(x), glm::vec3(1, 0, 0));
             M = glm::rotate(M, glm::radians(y), glm::vec3(0, 1, 0));
             M = glm::rotate(M, glm::radians(z), glm::vec3(0, 0, 1));
@@ -147,7 +146,6 @@ namespace bb
 
     inline glm::vec3 TransformNormal(const glm::mat4& M, const glm::vec3& n)
     {
-        // дл€ чистой ротации можно просто M * vec4(n,0)
         glm::vec4 v = M * glm::vec4(n, 0.0f);
         return glm::normalize(glm::vec3(v));
     }
@@ -217,7 +215,6 @@ namespace bb
         const std::unordered_map<std::string, std::string>& textures)
     {
         // "#0" -> textures["0"]
-        // "test" (встречаетс€ редко) -> "test"
         if (texRef.empty()) return {};
 
         if (texRef[0] == '#')
@@ -225,7 +222,7 @@ namespace bb
             std::string key = texRef.substr(1);
             auto it = textures.find(key);
             if (it != textures.end()) return it->second;
-            return {}; // неизвестна€ ссылка
+			return {}; // unknown reference
         }
 
         return texRef;
@@ -357,11 +354,9 @@ namespace bb
                     if (variants.empty())
                         return;
 
-                    // используем первый вариант дл€ UV mesh
                     const auto& v = variants.front();
                     const auto tileRect = v.uv;
 
-                    // сохран€ем все текстуры как используемые
                     for (const auto& t : variants)
                         usedTexSet.insert(t.name);
 

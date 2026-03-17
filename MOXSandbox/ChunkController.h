@@ -8,6 +8,8 @@
 
 #include "MemOx/object_pool.hpp"
 
+// NEED TO BE REFACTORED!!!!
+// now it`s a piece of shit, but works
 static constexpr ChunkPos s_directions[6] =
 {
 	{ 1, 0, 0 },

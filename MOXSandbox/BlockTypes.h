@@ -2,6 +2,5 @@
 
 #include <cstdint>
 
-// 0 reserved by non choosed block (like -1)
-// air starts from 1
+// 0 reserved by air
 using BlockTypeId = uint64_t;

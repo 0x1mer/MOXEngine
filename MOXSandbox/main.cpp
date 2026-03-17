@@ -53,6 +53,9 @@ int main()
 
 	// TODO: remove this, move to a separate InputAction logic (class, component, etc.)
     // Cause now i use concret numbers except GLFW defines, thats not good
+
+	// updated -> thats really bad, i need to move this to a separate input system, but for now it will be here
+
     engine.GetRenderer().SetMouseButtonCallback(
         [&](int button, int action, int mods)
         {
@@ -74,7 +77,7 @@ int main()
 
             if (button == 2 && action == 1)
             {
-                std::cout << "Pick block\n";
+				LOG("Picking block...");
             }
         }
     );
