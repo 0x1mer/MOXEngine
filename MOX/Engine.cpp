@@ -11,7 +11,7 @@ int Engine::Init()
 
 	int result = m_renderer.Init();
 	if (result != 0) {
-		std::cout << "Renderer initialization failed with code: " << result << "\n";
+		LOG_ERROR("Renderer initialization failed with code: " + std::to_string(result));
 		return result;
 	}
 
@@ -29,12 +29,12 @@ void Engine::Frame(const Scene& scene)
 {
     if (!m_isInit)
     {
-        std::cout << "Engine::Frame() called before successful initialization\n";
+		LOG_ERROR("Engine::Frame() called before successful initialization");
         return;
     }
 
     if (m_renderer.ShouldClose()) {
-		std::cout << "Stoped" << std::endl;
+		LOG_CRITICAL("Renderer requested to close. Stopping the engine.");
         return;
     }
 

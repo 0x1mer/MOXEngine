@@ -122,9 +122,9 @@ namespace {
 		const GLubyte* renderer = glGetString(GL_RENDERER);
 		const GLubyte* vendor = glGetString(GL_VENDOR);
 
-		std::cout << "OpenGL:   " << (version ? reinterpret_cast<const char*>(version) : "unknown") << "\n";
-		std::cout << "Renderer: " << (renderer ? reinterpret_cast<const char*>(renderer) : "unknown") << "\n";
-		std::cout << "Vendor:   " << (vendor ? reinterpret_cast<const char*>(vendor) : "unknown") << "\n";
+		LOG("OpenGL:" + std::string(version ? reinterpret_cast<const char*>(version) : "unknown"));
+		LOG("Renderer:" + std::string(renderer ? reinterpret_cast<const char*>(renderer) : "unknown"));
+		LOG("Vendor:" + std::string(vendor ? reinterpret_cast<const char*>(vendor) : "unknown"));
 	}
 }
 
@@ -158,7 +158,7 @@ void FramebufferSizeCallback(GLFWwindow* window, int width, int height)
 int Renderer::Init()
 {
 	if (!glfwInit()) {
-		std::cout << "Failed to initialize GLFW\n";
+		LOG_CRITICAL("Failed to initialize GLFW");
 		return -1;
 	}
 
@@ -183,7 +183,7 @@ int Renderer::Init()
 	m_height = kDefaultScreenHeight;
 
 	if (!m_window) {
-		std::cout << "Failed to create GLFW window\n";
+		LOG_CRITICAL("Failed to create GLFW window");
 		glfwTerminate();
 		return -1;
 	}
@@ -205,7 +205,7 @@ int Renderer::Init()
 
 	// GLAD init
 	if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress))) {
-		std::cout << "Failed to initialize GLAD\n";
+		LOG_CRITICAL("Failed to initialize GLAD");
 		glfwDestroyWindow(m_window);
 		glfwTerminate();
 		return -1;
@@ -297,7 +297,7 @@ void Renderer::RenderModels(
 				currentShader->setInt("uAtlas", 0);
 			}
 
-			// Model matrix from your Transform
+			// Model matrix from Transform
 			const glm::mat4 modelMat = r.transform.Matrix();
 			currentShader->setMat4("model", modelMat);
 

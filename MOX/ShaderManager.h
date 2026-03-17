@@ -4,6 +4,7 @@
 #include "Shader.h"
 
 #include "MOX_API.h"
+#include "Logger.h"
 
 class MOX_API ShaderManager
 {
@@ -21,7 +22,7 @@ public:
 	void LoadShader(const char* vertexPath, const char* fragmentPath)
 	{
 		m_shaders.emplace_back(vertexPath, fragmentPath);
-		std::cout << "Loaded shader: " << vertexPath << " + " << fragmentPath << "\n";
+		LOG("Loaded shader: " + std::string(vertexPath) + " + " + std::string(fragmentPath));
 	}
 
 	Shader& GetShader(size_t index) {
