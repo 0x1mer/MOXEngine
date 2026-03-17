@@ -177,6 +177,7 @@
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="MOX_API.h" />
+    <ClInclude Include="Paths.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Primitives.h" />
     <ClInclude Include="Renderer.h" />
@@ -205,6 +206,7 @@
     <ClCompile Include="Logger.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="MOX_API.cpp" />
+    <ClCompile Include="Paths.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

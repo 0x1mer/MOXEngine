@@ -43,7 +43,7 @@ int main()
 #ifdef DEBUG
     World world(4, worldShader);
 #else
-    World world(10, worldShader);
+    World world(8, worldShader);
 #endif // DEBUG
 
     int tickCounter = 0;
