@@ -16,6 +16,7 @@
 #include "ChunkController.h"
 
 #include "World.h"
+#include "Logger.h"
 
 const double TICK_RATE = 20.0;
 const double TICK_TIME = 1.0 / TICK_RATE; // 0.05 sec
@@ -24,10 +25,12 @@ int main()
 {
     Engine engine;
     engine.Init();
+	LOG("Engine created");
 
     TextureAtlas& atlas = TextureAtlas::Instance();
     atlas.BuildAtlas();
     atlas.UploadToOpenGL(/*generateMipMaps*/ true);
+	LOG("Texture atlas built and uploaded to OpenGL");
 
     ShaderManager shaderManager;
     shaderManager.LoadShader(
@@ -40,7 +43,7 @@ int main()
 #ifdef DEBUG
     World world(2, worldShader);
 #else
-    World world(4, worldShader);
+    World world(8, worldShader);
 #endif // DEBUG
 
     int tickCounter = 0;

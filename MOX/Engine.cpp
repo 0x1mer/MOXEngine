@@ -1,10 +1,14 @@
 #include "pch.h"
 #include "Engine.h"
+#include "Logger.h"
 
 #include <iostream>
 
 int Engine::Init()
 {
+    InitPaths();
+    LOGGER_SET_FOLDER(paths::logsDir);
+
 	int result = m_renderer.Init();
 	if (result != 0) {
 		std::cout << "Renderer initialization failed with code: " << result << "\n";
