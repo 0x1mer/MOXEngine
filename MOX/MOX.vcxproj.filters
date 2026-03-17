@@ -81,6 +81,9 @@
     <ClInclude Include="EngineTime.h">
       <Filter>Source</Filter>
     </ClInclude>
+    <ClInclude Include="Logger.h">
+      <Filter>Source</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -120,6 +123,9 @@
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="TextureAtlas.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Logger.cpp">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>
