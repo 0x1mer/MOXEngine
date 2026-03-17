@@ -12,6 +12,8 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 
+#include "TextureAtlas.h"
+
 uint64_t totalTriangles = 0;
 uint64_t totalDrawCalls = 0;
 
@@ -100,7 +102,7 @@ namespace {
 		renderer->camera.ProcessMouseScroll(static_cast<float>(yoffset));
 	}
 
-	void ProcessInput(GLFWwindow* window, float deltaTime, Camera& camera)
+	void ProcessInput(GLFWwindow* window, double deltaTime, Camera& camera)
 	{
 		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 			camera.ProcessKeyboard(CameraMovement::Forward, deltaTime);
@@ -133,9 +135,9 @@ bool Renderer::ShouldClose() const
 	return m_window && glfwWindowShouldClose(m_window);
 }
 
-float Renderer::GetTime() const
+double Renderer::GetTime() const
 {
-	return static_cast<float>(glfwGetTime());
+	return glfwGetTime();
 }
 
 void Renderer::SetMouseButtonCallback(MouseButtonCallbackFn callback)
@@ -245,7 +247,7 @@ int Renderer::Init()
 	return 0;
 }
 
-void Renderer::BeginFrame(float deltaTime)
+void Renderer::BeginFrame(double deltaTime)
 {
 	ProcessInput(m_window, deltaTime, camera);
 
@@ -259,7 +261,7 @@ void Renderer::BeginFrame(float deltaTime)
 
 void Renderer::RenderModels(
 	const Scene& scene,
-	float totalTime)
+	double totalTime)
 {
 	const float aspect = static_cast<float>(m_width) / static_cast<float>(m_height);
 
@@ -289,11 +291,12 @@ void Renderer::RenderModels(
 
 				currentShader->setVec3("lightDir", glm::normalize(glm::vec3(-0.3f, -1.0f, -0.2f)));
 				currentShader->setVec3("ambient", glm::vec3(0.15f));
-				currentShader->setFloat("uTime", totalTime);
+				currentShader->setFloat("uTime", static_cast<float>(totalTime));
 				currentShader->setBool("isLightEnabled", m_isLightEnabled);
 
 				glActiveTexture(GL_TEXTURE0);
-				glBindTexture(GL_TEXTURE_2D, 1);
+				glBindTexture(GL_TEXTURE_2D, TextureAtlas::Instance().GetGLTexture());
+
 				currentShader->setInt("uAtlas", 0);
 			}
 
@@ -335,10 +338,10 @@ void Renderer::RenderModels(
 
 void Renderer::Render(
 	const Scene& scene,
-	float fps,
-	float frameTimeMs,
-	float deltaTime,
-	float totalTime)
+	double fps,
+	double frameTimeMs,
+	double deltaTime,
+	double totalTime)
 {
 	totalDrawCalls = 0;
 	totalTriangles = 0;

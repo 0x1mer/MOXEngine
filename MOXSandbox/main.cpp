@@ -41,7 +41,7 @@ int main()
     Shader* worldShader = &shaderManager.GetShader(0);
 
 #ifdef DEBUG
-    World world(4, worldShader);
+    World world(2, worldShader);
 #else
     World world(8, worldShader);
 #endif // DEBUG
@@ -68,13 +68,16 @@ int main()
             {
                 if (hit.hit) {
                     BlockPos placePos = hit.previousPos;
-                    world.SetBlock(placePos, BlockRegistry::GetBlock("dirt"));
+                    world.SetBlock(placePos, pickedBlock);
 				}
             }
 
             if (button == 2 && action == 1)
             {
-                std::cout << "Pick block\n";
+				std::cout << "Middle click\n";
+                if (hit.hit) {
+                    pickedBlock = BlockRegistry::GetBlock(world.GetBlock(hit.blockPos)->metadata.name);
+                }
             }
         }
     );

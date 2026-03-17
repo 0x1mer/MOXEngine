@@ -112,9 +112,9 @@ private:
 	std::unordered_set<ChunkPos> m_unloadSet;
 
 #ifdef DEBUG
-	int m_maxChunkLoadsPerTick = 4;
-	int m_maxChunkUnloadsPerTick = 8;
-	int m_chunkRemeshByTickLimit = 4;
+	int m_maxChunkLoadsPerTick = 1;
+	int m_maxChunkUnloadsPerTick = 2;
+	int m_chunkRemeshByTickLimit = 1;
 #else
 	int m_maxChunkLoadsPerTick = 32;
 	int m_maxChunkUnloadsPerTick = 64;
